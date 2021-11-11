@@ -1,5 +1,6 @@
 let addHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'access-control-allow-origin': '*',
+  'access-control-expose-headers': '*',
   'x-powered-by': 'nomcdn',
 };
 
