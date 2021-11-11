@@ -1,6 +1,7 @@
 let addHeaders = {
   'access-control-allow-origin': '*',
   'access-control-expose-headers': '*',
+  'Cache-Control': 'public, max-age=31536000, immutable',
   'x-powered-by': 'nomcdn',
 };
 
