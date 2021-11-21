@@ -1,3 +1,5 @@
+'use strict';
+
 function notFound(req, res, next) {
   res.status(404);
   const error = new Error(`🔍 - Not Found`);
