@@ -7,7 +7,7 @@ const json = (res, data) => {
   });
 };
 
-const errorJson = (res, error, status = 500) => {
+const error500 = (res, error, status = 500) => {
   res.status(status).json({
     status: false,
     code: `NOT FOUND`,
@@ -15,7 +15,16 @@ const errorJson = (res, error, status = 500) => {
   });
 };
 
+const error403 = (res, error, status = 403) => {
+  res.status(status).json({
+    status: false,
+    code: status,
+    message: `${error}`,
+  });
+};
+
 module.exports = {
   json,
-  errorJson,
+  error500,
+  error403,
 };

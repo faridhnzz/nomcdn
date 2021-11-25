@@ -48,3 +48,37 @@ try {
 } catch (err) {
   next(err);
 }
+
+// req
+
+try {
+  request({
+    url: `https://` + proxyUrl + proxyPath,
+  })
+    .on('error', function (err) {
+      console.error(err);
+      res.json({
+        error: `${errno}`,
+        code: `NOT FOUND`,
+        message: `${err.hostname} url invalid`,
+      });
+    })
+    .pipe(res);
+} catch (error) {
+  next();
+}
+
+//
+var callback = function (response) {
+  if (response.statusCode === 200) {
+    res.writeHead(200, {
+      'Content-Type': response.headers['content-type'],
+    });
+    response.pipe(res);
+  } else {
+    res.writeHead(response.statusCode);
+    res.end();
+  }
+};
+
+https.request(option, callback);

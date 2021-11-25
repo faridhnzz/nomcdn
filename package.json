@@ -1,5 +1,5 @@
 {
-  "name": "cdnn",
+  "name": "nomcdn",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,13 +8,12 @@
     "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Farid Nizam <farid@nomsad.com>",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
     "express-cache-controller": "^1.1.0",
     "http": "0.0.1-security",
-    "js-yaml": "^4.1.0",
     "needle": "^3.0.0",
     "request": "^2.88.2",
     "url": "^0.11.0"

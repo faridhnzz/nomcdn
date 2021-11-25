@@ -3,7 +3,7 @@
 const addHeaders = {
   'access-control-allow-origin': '*',
   'access-control-expose-headers': '*',
-  'x-powered-by': 'nomcdn',
+  'x-powered-by': 'NomCDN',
 };
 const removeHeader = 'Transfer-Encoding';
 

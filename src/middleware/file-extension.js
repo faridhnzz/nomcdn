@@ -1,12 +1,8 @@
 'use strict';
 
-// const extensionWhitelist = ('.css', '.js');
-
-// const extensionBlacklist = '.png';
-
 module.exports = {
   // file extension BalckList
-  extensionBlacklist: new Set(['', '.bz2', '.dcm', '.exe', '.gif', '.gz', '.rar', '.iso', '.zip']),
+  extensionBlacklist: new Set(['', '.bz2', '.dcm', '.exe', '.gz', '.rar', '.iso', '.zip']),
 
   // file extension WhiteList
   extensionWhitelist: new Set([
