@@ -70,13 +70,6 @@ exports.urlCdnV2 = async (req, res, next) => {
   const parsedUrl = url.parse(getUrl, true);
   let proxyUrl = parsedUrl.host;
   let proxyPath = parsedUrl.pathname;
-  // htttp option
-
-  let option = {
-    hostname: proxyUrl,
-    path: proxyPath,
-    port: 443,
-  };
   // get file extension
   const extension = path.extname(getUrl).toLowerCase();
   // Blacklist extension
@@ -88,6 +81,7 @@ exports.urlCdnV2 = async (req, res, next) => {
         if (r.statusCode === 200) {
           res.writeHead(200, {
             'Content-Type': r.headers['content-type'],
+            Vary: 'Accept-Encoding',
           });
           r.pipe(res);
         } else {
@@ -96,7 +90,14 @@ exports.urlCdnV2 = async (req, res, next) => {
         }
       };
 
-      https.get(option, proxy);
+      https.get(
+        {
+          hostname: proxyUrl,
+          path: proxyPath,
+          port: 443,
+        },
+        proxy
+      );
 
       // jika extension tidak terdaftar di whitelist
     } else {
