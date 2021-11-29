@@ -1,19 +1,23 @@
 'use strict';
 
-const addHeaders = {
-  'access-control-allow-origin': '*',
-  'access-control-expose-headers': '*',
-  'x-powered-by': 'NomCDN',
-};
-const removeHeader = 'Transfer-Encoding';
+const Headers = require('../../config/headers');
 
 const responHeader = (req, res, next) => {
-  res.header(addHeaders);
-  res.removeHeader(removeHeader);
+  res.set(Headers.add);
+  res.set(Headers.security);
+  // res.removeHeader(Headers.rHeaders);
+  let headers = {};
+  Headers.remove.forEach((header) => {
+    let value = res.removeHeader(header);
+
+    if (value) {
+      headers[header] = value;
+    }
+  });
   next();
 };
 
 // Disable x-powered-by express
-let expressPoweredby = 'x-powered-by';
+let expressPoweredby = Headers.disablePowered;
 
 module.exports = { responHeader, expressPoweredby };

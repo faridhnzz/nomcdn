@@ -14,6 +14,7 @@
     "express": "^4.17.1",
     "express-cache-controller": "^1.1.0",
     "http": "0.0.1-security",
+    "mime-db": "^1.51.0",
     "needle": "^3.0.0",
     "request": "^2.88.2",
     "url": "^0.11.0"

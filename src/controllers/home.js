@@ -10,9 +10,14 @@ exports.index = async (req, res) => {
   const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
   return json(res, {
     Maintainer: 'Farid Nizam <farid@nomsad.com>',
-    CDN: {
+    'CDN-Beta': {
       Endpoint: '/url/[your url]',
-      Example: fullUrl + 'url/example.com/example.css',
+      Example: fullUrl + 'url/example.com/your file',
     },
   });
+};
+
+// redirect /url
+exports.url = async (req, res) => {
+  res.redirect('/');
 };

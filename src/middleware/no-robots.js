@@ -1,6 +1,8 @@
 'use strict';
 
+const Headers = require('../../config/headers');
+
 module.exports = (req, res, next) => {
-  res.setHeader('x-robots-tag', 'none');
+  res.setHeader(Headers.noRobot);
   next();
 };
