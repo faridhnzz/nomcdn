@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 link ropsxslyiy008ah oaxmz86r1fmeotd && pm2-runtime start ecosystem.config.js --env production",
-    "start:2": "node index.js",
+    "start:pm2": "pm2 link ropsxslyiy008ah oaxmz86r1fmeotd && pm2-runtime start ecosystem.config.js --env production",
+    "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "keywords": [],
