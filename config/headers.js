@@ -1,3 +1,5 @@
+// const country_code = headers['cf-ipcountry'];
+
 module.exports = {
   // For Headers respone OK :v
   // Add headers
@@ -5,6 +7,7 @@ module.exports = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Expose-Headers': '*',
     'X-Powered-By': 'NomCDN',
+    'X-TimeStamp': Date.now(),
   },
 
   // Remove headers

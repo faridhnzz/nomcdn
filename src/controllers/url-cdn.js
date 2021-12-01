@@ -5,7 +5,7 @@ const url = require('url');
 const https = require('https');
 const zlib = require('zlib');
 
-const config = require('../../config/index');
+const config = require('../../config');
 const { extensionWhitelist, extensionBlacklist } = require('../middleware/file-extension');
 const { error403, error502 } = require('../utils/response');
 const color = require('../utils/color-log');
@@ -31,7 +31,6 @@ module.exports = async (req, res, next) => {
       }
     });
 
-    // headers['accept-encoding'] = 'gzip, deflate, br';
     headers.connection = 'keep-alive';
 
     // get file extension
@@ -99,12 +98,14 @@ or handling errors as appropriate.
   Incoming response from the upstream server.
 **/
 
-function onResponse(req, res, upstreamResponse) {
+function onResponse(req, res, upstreamResponse, opts) {
   // Get respone headers
   const upstreamHeaders = upstreamResponse.headers;
 
   config.relayResponseHeaders.forEach((name) => {
     let value = upstreamHeaders[name.toLowerCase()];
+
+    res.set('ETag', upstreamHeaders['etag'] || `W/"${upstreamHeaders['eagleid']}"`);
 
     if (value) {
       res.set(name, value);
@@ -123,7 +124,7 @@ function onResponse(req, res, upstreamResponse) {
 
   // Meneruskan respons 200 OK
   if (upstreamStatus === 200) {
-    res.set('Cache-Control', 'max-age=15778800, immutable'); // 6 bulan
+    res.set('Cache-Control', `public, max-age=15778800, immutable`); // 6 bulan
 
     res.set('Content-Type', upstreamHeaders['content-type']);
 
@@ -133,15 +134,16 @@ function onResponse(req, res, upstreamResponse) {
   // Meneruskan respons 4xx dan 5xx tanpa mengubah Content-Type.
   if (upstreamStatus >= 400 && upstreamStatus <= 599) {
     res.set({
-      'Cache-Control': 'max-age=300', // 5 menit
-      'NomCDN-Upstream-Error': 'null',
+      'Cache-Control': 'public, max-age=300', // 5 menit
+      'Nomcdn-Upstream-Error': 'null',
     });
 
     if (upstreamHeaders['content-type']) {
       res.set('Content-Type', upstreamHeaders['content-type']);
     }
 
-    return void streamResponse(req, res, upstreamResponse);
+    res.json({ status: false });
+    // return void streamResponse(req, res, upstreamResponse);
   }
 
   res.status(502);
@@ -156,7 +158,11 @@ function streamResponse(req, res, upstreamResponse) {
     upstreamResponse = upstreamResponse.pipe(zlib.createUnzip());
   }
 
-  res.set('Vary', 'Accept-Encoding');
-
-  upstreamResponse.pipe(res);
+  if (upstreamResponse) {
+    res.set('Vary', 'Accept-Encoding');
+    upstreamResponse.pipe(res);
+  } else {
+    res.set(upstreamResponse.statusCode);
+    res.end();
+  }
 }
