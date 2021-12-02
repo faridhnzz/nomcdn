@@ -5,7 +5,6 @@ const Headers = require('../../config/headers');
 const responHeader = (req, res, next) => {
   res.set(Headers.add);
   res.set(Headers.security);
-  // res.set('X-NCD-Request-Id', req.headers['x-request-id']);
 
   if (process.env.NODE_ENV == 'production') {
     res.set('X-NCD-Request-Id', req.headers['x-request-id']);

@@ -10,11 +10,6 @@ app.listen(PORT, () => {
     console.log(color.cyan, `Server listening on http://${localhost}:${PORT}`);
   } else {
     console.log(`Server listening on http://${localhost}:${PORT}`);
-    webhook.info(`Server listening on http://${localhost}:${PORT}`);
+    webhook.info(`🚀 Server UP 🚀`);
   }
-
-  // if (process.env.NODE_ENV == 'production') {
-  //   console.log(`Server listening on http://${localhost}:${PORT}`);
-  //   webhook.info(`Server listening on http://${localhost}:${PORT}`);
-  // }
 });
