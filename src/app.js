@@ -4,7 +4,12 @@ const app = express();
 const routes = require('./routes/index');
 const headerRespons = require('./middleware/headerRespons');
 const response = require('./utils/response');
+const config = require('../config');
 
+// Aseet
+app.use('/static', express.static(config.publicDir, { maxAge: '365d', immutable: true }));
+
+// Proxy HTTPS
 app.set('trust proxy', 'loopback', true);
 
 // Etag
