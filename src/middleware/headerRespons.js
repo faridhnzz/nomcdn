@@ -2,16 +2,13 @@
 
 const Headers = require('../../config/headers');
 
-const herokuHeader = (req) => {
-  'X-NCD-Request-Id', req.headers['x-request-id'];
-};
-
 const responHeader = (req, res, next) => {
   res.set(Headers.add);
   res.set(Headers.security);
+  // res.set('X-NCD-Request-Id', req.headers['x-request-id']);
 
   if (process.env.NODE_ENV == 'production') {
-    res.set(herokuHeader);
+    res.set('X-NCD-Request-Id', req.headers['x-request-id']);
   }
 
   let headers = {};
