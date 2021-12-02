@@ -1,12 +1,18 @@
 'use strict';
 
 const Headers = require('../../config/headers');
-// const respon = require('./respone-time');
+
+const herokuHeader = (req) => {
+  'X-NCD-Request-Id', req.headers['x-request-id'];
+};
 
 const responHeader = (req, res, next) => {
-  res.set('X-NCD-Request-Id', req.headers['x-request-id']);
   res.set(Headers.add);
   res.set(Headers.security);
+
+  if (process.env.NODE_ENV == 'production') {
+    res.set(herokuHeader);
+  }
 
   let headers = {};
   Headers.remove.forEach((header) => {

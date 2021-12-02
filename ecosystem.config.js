@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'index',
+      name: 'nomcdn-backend',
       script: './index.js',
       instances: 'max',
       exec_mode: 'cluster',

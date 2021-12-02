@@ -98,7 +98,7 @@ or handling errors as appropriate.
   Incoming response from the upstream server.
 **/
 
-function onResponse(req, res, upstreamResponse, opts) {
+function onResponse(req, res, upstreamResponse) {
   // Get respone headers
   const upstreamHeaders = upstreamResponse.headers;
 

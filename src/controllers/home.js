@@ -1,7 +1,6 @@
 'use strict';
 
 const { json } = require('../utils/response');
-const { cacheControl } = require('../middleware/cache-control');
 
 // index of /
 exports.index = async (req, res) => {
