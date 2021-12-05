@@ -5,7 +5,7 @@ module.exports = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Expose-Headers': '*',
     'X-Powered-By': 'NomCDN',
-    'X-NCD-TimeStamp': Date.now(),
+    'X-TimeStamp': Date.now(),
   },
 
   // Remove headers

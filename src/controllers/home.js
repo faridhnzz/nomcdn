@@ -9,12 +9,8 @@ exports.index = async (req, res) => {
   const fullUrl = `${'https'}://` + req.get('host') + req.originalUrl;
   return json(res, {
     Maintainer: 'Farid Nizam <farid@nomsad.com>',
-    'CDN-Beta': {
+    CDN: {
       Endpoint: '/url/[your url]',
-      Example: fullUrl + 'url/example.com/your file',
-    },
-    Image: {
-      Endpoint: '/img/[your url]',
       Example: fullUrl + 'url/example.com/your file',
     },
   });

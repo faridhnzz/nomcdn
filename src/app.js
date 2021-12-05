@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 
+// const addRequestId = require('./middleware/request-id');
 const routes = require('./routes/index');
 const headerRespons = require('./middleware/headerRespons');
 const response = require('./utils/response');
@@ -22,6 +23,7 @@ app.get('*/google[0-9a-f]{16}.html', response.error403);
 // header respons
 app.disable(headerRespons.expressPoweredby);
 app.use(headerRespons.responHeader);
+// app.use(addRequestId);
 
 // routes
 app.use(routes);

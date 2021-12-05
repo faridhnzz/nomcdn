@@ -7,6 +7,7 @@
     "start": "node index.js",
     "start:pm2": "pm2 link ropsxslyiy008ah oaxmz86r1fmeotd && pm2-runtime start ecosystem.config.js --env production",
     "dev": "nodemon index.js",
+    "dev:debug": "nodemon --inspect index.js",
     "lint": "eslint .",
     "lint-fix": "eslint --fix ."
   },
@@ -21,7 +22,8 @@
     "http": "0.0.1-security",
     "pm2": "^5.1.2",
     "request": "^2.88.2",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "eslint": "^8.3.0",

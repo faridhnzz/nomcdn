@@ -6,10 +6,6 @@ const responHeader = (req, res, next) => {
   res.set(Headers.add);
   res.set(Headers.security);
 
-  if (process.env.NODE_ENV == 'production') {
-    res.set('X-NCD-Request-Id', req.headers['x-request-id']);
-  }
-
   let headers = {};
   Headers.remove.forEach((header) => {
     let value = res.removeHeader(header);

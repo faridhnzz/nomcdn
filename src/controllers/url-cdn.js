@@ -77,8 +77,8 @@ module.exports = async (req, res, next) => {
       const logRequest = proxyUrl + proxyPath;
       console.log(color.kuning, `REQUEST:`, logRequest);
     }
-  } catch {
-    next();
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -105,6 +105,7 @@ function onResponse(req, res, upstreamResponse) {
   config.relayResponseHeaders.forEach((name) => {
     let value = upstreamHeaders[name.toLowerCase()];
 
+    // `W/"${upstreamHeaders['eagleid']}"`
     res.set('ETag', upstreamHeaders['etag'] || `W/"${upstreamHeaders['eagleid']}"`);
 
     if (value) {
