@@ -6,7 +6,7 @@ const https = require('https');
 const zlib = require('zlib');
 
 const config = require('../../config');
-const { extensionWhitelist, extensionBlacklist } = require('../middleware/file-extension');
+const { extensionWhitelist } = require('../middleware/file-extension');
 const { error403, error502 } = require('../utils/response');
 const color = require('../utils/color-log');
 
@@ -20,7 +20,7 @@ module.exports = async (req, res, next) => {
     let proxyUrl = parsedUrl.host;
     let proxyPath = parsedUrl.pathname;
 
-    // Headers Respone
+    // Headers request
     let headers = {};
 
     config.relayRequestHeaders.forEach((header) => {
@@ -36,40 +36,41 @@ module.exports = async (req, res, next) => {
     // get file extension
     const extension = path.extname(getUrl).toLowerCase();
 
-    if (!extensionBlacklist.has(extension)) {
-      if (extensionWhitelist.has(extension)) {
-        // req proxy
-        let proxyReq = https.get({
-          hostname: proxyUrl,
-          path: proxyPath,
-          port: 443,
-          headers: headers,
+    // if (!extensionBlacklist.has(extension))
+    if (extensionWhitelist.has(extension)) {
+      // if (extensionWhitelist.has(extension)) {
+      // req proxy
+      let proxyReq = https.get({
+        hostname: proxyUrl,
+        path: proxyPath,
+        port: 443,
+        headers: headers,
+      });
+
+      proxyReq.on('socket', (socket) => {
+        socket.setTimeout(config.proxyTimeout);
+
+        socket.on('timeout', () => {
+          console.error(color.merah, 'Proxy request timed out:', proxyPath);
+          proxyReq.abort();
         });
+      });
 
-        proxyReq.on('socket', (socket) => {
-          socket.setTimeout(config.proxyTimeout);
+      proxyReq.on('response', (upstreamResponse) => {
+        onResponse(req, res, upstreamResponse);
+      });
 
-          socket.on('timeout', () => {
-            console.error(color.merah, 'Proxy request timed out:', proxyPath);
-            proxyReq.abort();
-          });
-        });
+      proxyReq.on('error', (error) => {
+        return error502(res, error.hostname);
+      });
 
-        proxyReq.on('response', (upstreamResponse) => {
-          onResponse(req, res, upstreamResponse);
-        });
-
-        proxyReq.on('error', (error) => {
-          return error502(res, `NomCDN either was unable to connect to '${error.hostname}' or received an invalid response from '${error.hostname}'. Please try your request again in a moment.`);
-        });
-
-        // jika extension file tidak terdaftar di whitelist
-      } else {
-        return error403(res);
-      }
+      // jika extension file tidak terdaftar di whitelist
+      // } else {
+      //   return error403(res);
+      // }
       // jika extension file di blokir
     } else {
-      return error403(res);
+      return error403(res, 'File extension blocked.');
     }
 
     // Log request from request url
@@ -88,10 +89,10 @@ module.exports = async (req, res, next) => {
 Handles an incoming response from an upstream server, piping it to the client
 or handling errors as appropriate.
 
-@param {http.ClientRequest} req
+@param {https.ClientRequest} req
   Express request object.
 
-@param {http.ServerResponse} res
+@param {https.ServerResponse} res
   Express response object.
 
 @param {https.IncomingMessage} upstreamResponse
@@ -105,23 +106,17 @@ function onResponse(req, res, upstreamResponse) {
   config.relayResponseHeaders.forEach((name) => {
     let value = upstreamHeaders[name.toLowerCase()];
 
-    // `W/"${upstreamHeaders['eagleid']}"`
-    res.set('ETag', upstreamHeaders['etag'] || `W/"${upstreamHeaders['eagleid']}"`);
-
     if (value) {
       res.set(name, value);
     }
   });
 
+  // res.set('ETag', upstreamHeaders['etag'] || upstreamHeaders['eagleid']);
+
   // Get status code headers
   const upstreamStatus = upstreamResponse.statusCode;
 
   res.status(upstreamStatus);
-
-  // Respond immediately on 2xx No Content or 3xx.
-  if (upstreamStatus === 204 || upstreamStatus === 205 || (upstreamStatus >= 300 && upstreamStatus <= 399)) {
-    return void res.end();
-  }
 
   // Meneruskan respons 200 OK
   if (upstreamStatus === 200) {
@@ -132,22 +127,42 @@ function onResponse(req, res, upstreamResponse) {
     return void streamResponse(req, res, upstreamResponse);
   }
 
-  // Meneruskan respons 4xx dan 5xx tanpa mengubah Content-Type.
-  if (upstreamStatus >= 400 && upstreamStatus <= 599) {
-    res.set({
-      'Cache-Control': 'public, max-age=300', // 5 menit
-      'Nomcdn-Upstream-Error': 'null',
-    });
+  if (upstreamStatus === 204 || upstreamStatus === 205) {
+    const message = [
+      {
+        code: upstreamStatus,
+        title: 'No content',
+        message: 'No content from origin.',
+      },
+    ];
+    res.set('Cache-Control', 'public, max-age=60');
+    res.status(upstreamStatus).render('error', { message });
 
-    if (upstreamHeaders['content-type']) {
-      res.set('Content-Type', upstreamHeaders['content-type']);
-    }
-
-    res.json({ status: false });
-    // return void streamResponse(req, res, upstreamResponse);
+    return;
   }
 
-  res.status(502);
+  if (upstreamStatus >= 300 && upstreamStatus <= 399) {
+    return;
+  }
+
+  if (upstreamStatus === 404) {
+    const message = [
+      {
+        code: upstreamStatus,
+        title: 'Not found',
+        message: 'Could not find the page.',
+      },
+    ];
+    res.set('Cache-Control', 'public, max-age=60');
+    res.status(upstreamStatus).render('error', { message });
+
+    return;
+  }
+
+  let status = 502;
+  const message = [{ code: status, title: 'Bad Gateway' }];
+  res.set('Cache-Control', 'public, max-age=60');
+  res.status(status).render('error', { message });
 }
 
 function streamResponse(req, res, upstreamResponse) {
@@ -162,8 +177,5 @@ function streamResponse(req, res, upstreamResponse) {
   if (upstreamResponse) {
     res.set('Vary', 'Accept-Encoding');
     upstreamResponse.pipe(res);
-  } else {
-    res.set(upstreamResponse.statusCode);
-    res.end();
   }
 }

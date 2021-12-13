@@ -1,16 +1,21 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
+const electricity = require('electricity');
 
-// const addRequestId = require('./middleware/request-id');
 const routes = require('./routes/index');
 const headerRespons = require('./middleware/headerRespons');
 const response = require('./utils/response');
 const config = require('../config');
 
-// Aseet
-app.use('/static', express.static(config.publicDir, { maxAge: '365d', immutable: true }));
+// view engine setup
+app.set('view engine', 'ejs');
+app.set('views' + config.viewsDir);
 
-// Proxy HTTPS
+app.use(electricity.static(config.publicDir, config.electricity));
+app.use(cors());
+
+// trust proxy
 app.set('trust proxy', 'loopback', true);
 
 // Etag
@@ -21,9 +26,8 @@ app.set('etag', 'weak');
 app.get('*/google[0-9a-f]{16}.html', response.error403);
 
 // header respons
-app.disable(headerRespons.expressPoweredby);
+app.disable('x-powered-by');
 app.use(headerRespons.responHeader);
-// app.use(addRequestId);
 
 // routes
 app.use(routes);

@@ -1,0 +1,95 @@
+html,
+body {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  background-color: #f7f8fb;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.message {
+  font-family: Dosis, sans-serif;
+  text-align: center;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px 20px;
+  max-width: 500px;
+}
+
+.message__code {
+  font-size: 100px;
+  font-weight: 800;
+  margin-top: -20px;
+}
+
+.message__title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: -73px;
+  color: #47494e;
+  margin-bottom: 8px;
+}
+
+.message__message {
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 28px;
+}
+
+p {
+  -webkit-margin-after: 0px;
+  -webkit-margin-before: 0px;
+  font-size: 15px;
+  /* color: #7f828b; */
+  line-height: 21px;
+  margin-bottom: 4px;
+}
+
+body.friendly {
+  background: -webkit-linear-gradient(-45deg, #8363a1 0%, #74a8c3 100%);
+  background: linear-gradient(135deg, #8363a1 0%, #74a8c3 100%);
+}
+
+body.friendly .message__title {
+  color: #fff;
+}
+
+body.friendly p {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+code {
+  background: #313440;
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #d9dcef;
+}
+
+code span {
+  color: #d093e3;
+}
+
+p a {
+  color: #408fec;
+  text-decoration: none;
+}
+
+br {
+  line-height: 22px;
+}
+
+.back {
+  margin-top: 18px;
+}

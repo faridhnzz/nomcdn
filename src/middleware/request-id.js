@@ -6,7 +6,8 @@ module.exports = (req, res, next) => {
   const uuidVersion = 'v4';
   const headerName = 'X-Request-Id';
 
-  const setRequestId = req.headers[headerName.toLowerCase()] || uuid[uuidVersion]();
-  res.set('X-NCD-Request-Id', setRequestId);
+  const getRequestId = req.headers[headerName.toLowerCase()] || uuid[uuidVersion]();
+  const setHeader = ('X-NCD-Request-Id', getRequestId);
   next();
+  return setHeader;
 };

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <% message.forEach(msg => { %>
+    <title><%= msg.code %> | <%= msg.title %></title>
+    <% }) %>
+    <link rel="shortcut icon" type="image/x-icon" href="#" />
+    <base target="_parent" />
+    <link rel="stylesheet" href="<%= electricity.url('/css/fonts.css')%>" />
+    <link rel="stylesheet" href="<%= electricity.url('/css/main.css')%>" />
+  </head>
+  <body>
+    <div class="spacer"></div>
+    <div class="message">
+      <% message.forEach(msg => { %>
+      <h1 class="message__code"><%= msg.code %></h1>
+      <h2 class="message__title"><%= msg.title %></h2>
+      <p class="message__message"><%- msg.message %></p>
+      <% }) %>
+    </div>
+  </body>
+</html>

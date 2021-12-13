@@ -6,6 +6,7 @@ module.exports = {
 
   // file extension WhiteList
   extensionWhitelist: new Set([
+    '.webp',
     '.ico',
     '.jpg',
     '.png',

@@ -17,21 +17,21 @@ const error500 = (res, error, status = 500) => {
 };
 
 const error502 = (res, error, status = 502) => {
-  res.status(status).json({
-    status: false,
-    code: `-${status}`,
-    error: `Bad Gateway`,
-    message: `${error}`,
-  });
+  const message = [
+    {
+      code: status,
+      title: 'Bad Gateway',
+      message: `NomCDN either was unable to connect to <code><span>${error}</span></code> or received an invalid response from <code><span>${error}</span></code><br />Please try your request again in a moment.`,
+    },
+  ];
+  res.set('Cache-Control', 'private, no-cache');
+  res.status(status).render('error', { message });
 };
 
 const error403 = (res, error, status = 403) => {
-  res.status(status).json({
-    status: false,
-    code: `-${status}`,
-    error: `Forbidden`,
-    message: `Stop that.`,
-  });
+  const message = [{ code: status, title: 'Forbidden', message: `${error}` }];
+  res.set('Cache-Control', 'private, no-cache');
+  res.status(status).render('error', { message });
 };
 
 module.exports = {

@@ -5,7 +5,6 @@ const routes = express.Router();
 
 const controllers = require('../controllers');
 const noRobots = require('../middleware/no-robots');
-// const config = require('../../config');
 
 routes.get('/', controllers.index);
 
@@ -20,7 +19,9 @@ routes.get('/200', (req, res) => {
 
 // 404 page
 routes.get('*', (req, res) => {
-  res.status(404).send('404 - Page Not Found');
+  const message = [{ code: '404', title: 'Not found' }];
+  res.set('Cache-Control', 'private, no-cache');
+  res.status(404).render('error', { message });
 });
 
 module.exports = routes;
