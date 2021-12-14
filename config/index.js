@@ -31,5 +31,10 @@ module.exports = {
       'Strict-Transport-Security': 'max-age=63072000',
       'X-Content-Type-Options': 'nosniff',
     },
+    sass: {
+      // Object passed straight to node-sass options
+      outputStyle: 'compressed',
+      quietDeps: false,
+    },
   },
 };

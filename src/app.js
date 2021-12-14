@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const electricity = require('electricity');
 
 const routes = require('./routes/index');
 const headerRespons = require('./middleware/headerRespons');
@@ -12,7 +11,7 @@ const config = require('../config');
 app.set('view engine', 'ejs');
 app.set('views' + config.viewsDir);
 
-app.use(electricity.static(config.publicDir, config.electricity));
+app.use(express.static(config.publicDir, { maxAge: '1y' }));
 app.use(cors());
 
 // trust proxy

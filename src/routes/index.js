@@ -20,7 +20,7 @@ routes.get('/200', (req, res) => {
 // 404 page
 routes.get('*', (req, res) => {
   const message = [{ code: '404', title: 'Not found' }];
-  res.set('Cache-Control', 'private, no-cache');
+  res.set('Cache-Control', 'public, max-age=3600');
   res.status(404).render('error', { message });
 });
 

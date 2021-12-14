@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2021-12-14
+
+- Remove packege electricity
+- Fix bug MIME type
+
 ## 2021-12-13
 
 - Update error page dengan EJS
