@@ -19,22 +19,4 @@ module.exports = {
   // Array of response header names that should be relayed from Url Respone to the
   // user.
   relayResponseHeaders: ['ETag', 'Date', 'Content-Length', 'Location', 'Link'],
-
-  // Header for static file use electricity
-  electricity: {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Expose-Headers': '*',
-      'Cache-Control': 'public, max-age=31536000',
-      'X-Powered-By': 'NomCDN',
-      'X-TimeStamp': Date.now(),
-      'Strict-Transport-Security': 'max-age=63072000',
-      'X-Content-Type-Options': 'nosniff',
-    },
-    sass: {
-      // Object passed straight to node-sass options
-      outputStyle: 'compressed',
-      quietDeps: false,
-    },
-  },
 };

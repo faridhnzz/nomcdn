@@ -13,14 +13,11 @@ function getRequestId(options) {
 
 // set headers respone
 function setHeadersRequestId() {
-  const headers = { 'X-Request-Id': getRequestId() };
+  const headers = { 'X-NCD-Request-Id': getRequestId() };
   return headers;
 }
 
-// Sent RequestId to headers reespone
+// Kirim headers ke headersRespone.js
 const RequestId = setHeadersRequestId();
 
-// Logging
-// TODO Create logging for trace error client
-
-module.exports = { RequestId };
+console.log(RequestId);

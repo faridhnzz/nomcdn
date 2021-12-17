@@ -22,7 +22,9 @@ app.set('etag', true); // true / false
 app.set('etag', 'weak');
 
 // Don't allow requests for Google Webmaster Central verification files.
-app.get('*/google[0-9a-f]{16}.html', response.error403);
+app.get('*/google[0-9a-f]{16}.html', (res) => {
+  return response.errPage(res, '502');
+});
 
 // header respons
 app.disable('x-powered-by');

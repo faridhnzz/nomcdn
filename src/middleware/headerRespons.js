@@ -1,10 +1,12 @@
 'use strict';
 
 const Headers = require('../../config/headers');
+const { RequestId } = require('../middleware/request-id');
 
 const responHeader = (req, res, next) => {
   res.set(Headers.add);
   res.set(Headers.security);
+  res.set(RequestId);
 
   let headers = {};
   Headers.remove.forEach((header) => {
@@ -18,7 +20,4 @@ const responHeader = (req, res, next) => {
   next();
 };
 
-// Disable x-powered-by express
-let expressPoweredby = Headers.disablePowered;
-
-module.exports = { responHeader, expressPoweredby };
+module.exports = { responHeader };

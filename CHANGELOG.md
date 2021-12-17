@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2021
+
+- Update Procfile
+- Update respone error
+- Ganti nama folder error ke error page
+- Add request-id
+
 ## 2021-12-14
 
 - Remove packege electricity

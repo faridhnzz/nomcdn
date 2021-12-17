@@ -7,7 +7,7 @@ const zlib = require('zlib');
 
 const config = require('../../config');
 const { extensionWhitelist } = require('../middleware/file-extension');
-const { error403, error502 } = require('../utils/response');
+const response = require('../utils/response');
 const color = require('../utils/color-log');
 
 module.exports = async (req, res, next) => {
@@ -61,7 +61,8 @@ module.exports = async (req, res, next) => {
       });
 
       proxyReq.on('error', (error) => {
-        return error502(res, error.hostname);
+        let message = `NomCDN either was unable to connect to <code><span>${error.hostname}</span></code> or received an invalid response from <code><span>${error.hostname}</span></code><br />Please try your request again in a moment.`;
+        return response.errPage(res, `502`, `${message}`);
       });
 
       // jika extension file tidak terdaftar di whitelist
@@ -70,7 +71,8 @@ module.exports = async (req, res, next) => {
       // }
       // jika extension file di blokir
     } else {
-      return error403(res, 'File extension blocked.');
+      let message = 'File extension blocked.';
+      return response.errPage(res, `403`, `${message}`);
     }
 
     // Log request from request url
@@ -100,7 +102,7 @@ or handling errors as appropriate.
 **/
 
 function onResponse(req, res, upstreamResponse) {
-  // Get respone headers
+  // Get response headers
   const upstreamHeaders = upstreamResponse.headers;
 
   config.relayResponseHeaders.forEach((name) => {
@@ -121,24 +123,13 @@ function onResponse(req, res, upstreamResponse) {
   // Meneruskan respons 200 OK
   if (upstreamStatus === 200) {
     res.set('Cache-Control', `public, max-age=15778800, immutable`); // 6 bulan
-
     res.set('Content-Type', upstreamHeaders['content-type']);
 
     return void streamResponse(req, res, upstreamResponse);
   }
 
   if (upstreamStatus === 204 || upstreamStatus === 205) {
-    const message = [
-      {
-        code: upstreamStatus,
-        title: 'No content',
-        message: 'No content from origin.',
-      },
-    ];
-    res.set('Cache-Control', 'public, max-age=60');
-    res.status(upstreamStatus).render('error', { message });
-
-    return;
+    return void response.errPage(res, `${upstreamStatus}`);
   }
 
   if (upstreamStatus >= 300 && upstreamStatus <= 399) {
@@ -146,23 +137,11 @@ function onResponse(req, res, upstreamResponse) {
   }
 
   if (upstreamStatus === 404) {
-    const message = [
-      {
-        code: upstreamStatus,
-        title: 'Not found',
-        message: 'Could not find the page.',
-      },
-    ];
-    res.set('Cache-Control', 'public, max-age=60');
-    res.status(upstreamStatus).render('error', { message });
-
-    return;
+    let message = 'Could not find the page.';
+    return void response.errPage(res, `${upstreamStatus}`, `${message}`);
   }
 
-  let status = 502;
-  const message = [{ code: status, title: 'Bad Gateway' }];
-  res.set('Cache-Control', 'public, max-age=60');
-  res.status(status).render('error', { message });
+  return void response.errPage(res, `502`);
 }
 
 function streamResponse(req, res, upstreamResponse) {
