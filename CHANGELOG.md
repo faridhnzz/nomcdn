@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## 2021
+## 2021-12-16
+
+- Fix bug (/:url) status code 3xx bikin crash app :v
+- Update response-code & response
+
+## 2021-12-15
 
 - Update Procfile
 - Update respone error

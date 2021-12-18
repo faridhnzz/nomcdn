@@ -80,8 +80,8 @@ module.exports = async (req, res, next) => {
       const logRequest = proxyUrl + proxyPath;
       console.log(color.kuning, `REQUEST:`, logRequest);
     }
-  } catch (error) {
-    next(error);
+  } catch {
+    next();
   }
 };
 
@@ -133,11 +133,12 @@ function onResponse(req, res, upstreamResponse) {
   }
 
   if (upstreamStatus >= 300 && upstreamStatus <= 399) {
-    return;
+    res.removeHeader('Location', upstreamHeaders['location']);
+    return response.errPage(res, `${upstreamStatus}`, `Your website has a mistake.`);
   }
 
   if (upstreamStatus === 404) {
-    let message = 'Could not find the page.';
+    let message = 'Could not find the page on your website.';
     return void response.errPage(res, `${upstreamStatus}`, `${message}`);
   }
 
