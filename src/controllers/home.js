@@ -8,7 +8,7 @@ exports.index = async (req, res) => {
 
   const fullUrl = `${'https'}://` + req.get('host') + req.originalUrl;
   return json(res, {
-    Maintainer: 'Farid Nizam <farid@nomsad.com>',
+    Maintainer: 'Farid Nizam <me@farid.cyou>',
     CDN: {
       Endpoint: '/url/[your url not use https]',
       Example: fullUrl + 'url/www.example.com/example.extension',
