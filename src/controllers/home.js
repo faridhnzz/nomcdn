@@ -11,7 +11,7 @@ exports.index = async (req, res) => {
     Maintainer: 'Farid Nizam <farid@nomsad.com>',
     CDN: {
       Endpoint: '/url/[your url not use https]',
-      Example: fullUrl + 'url/example.com/your file',
+      Example: fullUrl + 'url/www.example.com/example.extension',
     },
   });
 };

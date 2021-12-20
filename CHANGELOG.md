@@ -2,12 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## 2021-12-16
+## 2021-12-19
+
+- Add cloudflare for restoring visitors ip visitor / client
+- Add logging
+- Update request-id & header-respons
+- Update url cdn otomatis generate etag jika upstream headers tidak memberikan etag
+
+## 2021-12-18
 
 - Fix bug (/:url) status code 3xx bikin crash app :v
 - Update response-code & response
 
-## 2021-12-15
+## 2021-12-16
 
 - Update Procfile
 - Update respone error

@@ -4,6 +4,7 @@ const path = require('path');
 const url = require('url');
 const https = require('https');
 const zlib = require('zlib');
+const etag = require('etag');
 
 const config = require('../../config');
 const { extensionWhitelist } = require('../middleware/file-extension');
@@ -13,7 +14,7 @@ const color = require('../utils/color-log');
 module.exports = async (req, res, next) => {
   try {
     // get param from url
-    const getUrl = `${req.secure}://` + req.params.url + req.path;
+    const getUrl = `https://` + req.params.url + req.path;
 
     // parse url
     const parsedUrl = url.parse(getUrl, true);
@@ -36,9 +37,7 @@ module.exports = async (req, res, next) => {
     // get file extension
     const extension = path.extname(getUrl).toLowerCase();
 
-    // if (!extensionBlacklist.has(extension))
     if (extensionWhitelist.has(extension)) {
-      // if (extensionWhitelist.has(extension)) {
       // req proxy
       let proxyReq = https.get({
         hostname: proxyUrl,
@@ -57,6 +56,17 @@ module.exports = async (req, res, next) => {
       });
 
       proxyReq.on('response', (upstreamResponse) => {
+        const upstreamHeaders = upstreamResponse.headers;
+
+        config.relayResponseHeaders.forEach((name) => {
+          let value = upstreamHeaders[name.toLowerCase()];
+
+          if (value) {
+            res.set(name, value);
+          }
+        });
+
+        res.set('Etag', upstreamHeaders['etag'] || etag(getUrl, { weak: true }));
         onResponse(req, res, upstreamResponse);
       });
 
@@ -64,12 +74,6 @@ module.exports = async (req, res, next) => {
         let message = `NomCDN either was unable to connect to <code><span>${error.hostname}</span></code> or received an invalid response from <code><span>${error.hostname}</span></code><br />Please try your request again in a moment.`;
         return response.errPage(res, `502`, `${message}`);
       });
-
-      // jika extension file tidak terdaftar di whitelist
-      // } else {
-      //   return error403(res);
-      // }
-      // jika extension file di blokir
     } else {
       let message = 'File extension blocked.';
       return response.errPage(res, `403`, `${message}`);
@@ -105,22 +109,11 @@ function onResponse(req, res, upstreamResponse) {
   // Get response headers
   const upstreamHeaders = upstreamResponse.headers;
 
-  config.relayResponseHeaders.forEach((name) => {
-    let value = upstreamHeaders[name.toLowerCase()];
-
-    if (value) {
-      res.set(name, value);
-    }
-  });
-
-  // res.set('ETag', upstreamHeaders['etag'] || upstreamHeaders['eagleid']);
-
   // Get status code headers
   const upstreamStatus = upstreamResponse.statusCode;
 
   res.status(upstreamStatus);
 
-  // Meneruskan respons 200 OK
   if (upstreamStatus === 200) {
     res.set('Cache-Control', `public, max-age=15778800, immutable`); // 6 bulan
     res.set('Content-Type', upstreamHeaders['content-type']);

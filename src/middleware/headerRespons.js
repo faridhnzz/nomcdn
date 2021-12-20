@@ -1,12 +1,12 @@
 'use strict';
 
 const Headers = require('../../config/headers');
-const { RequestId } = require('../middleware/request-id');
+const { RequestId } = require('./request-id');
 
 const responHeader = (req, res, next) => {
   res.set(Headers.add);
   res.set(Headers.security);
-  res.set(RequestId);
+  res.set('X-Request-Id', req.headers['x-request-id'] || RequestId);
 
   let headers = {};
   Headers.remove.forEach((header) => {

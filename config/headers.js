@@ -3,7 +3,7 @@ module.exports = {
   // Add headers
   add: {
     'Access-Control-Expose-Headers': '*',
-    'X-Powered-By': 'NomCDN',
+    'X-Powered-By': 'nomcdn.com',
     'X-TimeStamp': Date.now(),
   },
 

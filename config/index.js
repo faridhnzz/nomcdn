@@ -18,5 +18,5 @@ module.exports = {
 
   // Array of response header names that should be relayed from Url Respone to the
   // user.
-  relayResponseHeaders: ['ETag', 'Date', 'Content-Length', 'Location', 'Link'],
+  relayResponseHeaders: ['Date', 'Content-Length', 'Location', 'Link'],
 };
